@@ -13,7 +13,7 @@ class User(object):
 
 
 def fetch_users():
-    with sqlite3.connect('shopping.db') as conn:
+    with sqlite3.connect('SWEET.DB') as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM user")
         users_data = cursor.fetchall()
@@ -28,17 +28,16 @@ def fetch_users():
 
 # creating table for users
 def init_user_table():
-    conn = sqlite3.connect('shopping.db')
-    print("Opened database successfully")
+    conn = sqlite3.connect('SWEET.DB')
+    print("Database Access Granted")
 
     conn.execute("CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                  "first_name TEXT NOT NULL,"
                  "last_name TEXT NOT NULL,"
                  "address TEXT NOT NULL,"
                  "email TEXT NOT NULL,"
-                 "username TEXT NOT NULL,"
                  "password TEXT NOT NULL)")
-    print("user table successfully")
+    print("user table created successfully")
     conn.close()
 
 
@@ -56,7 +55,7 @@ def init_products_table():
                      "price TEXT NOT NULL,"
                      "type TEXT NOT NULL, "
                      "total TEXT NOT NULL)")
-    print("shopping table created successfully")
+    print("sweets table created successfully")
 
 
 init_products_table()
@@ -93,13 +92,12 @@ def user_registration():
         surname = request.form['last_name']
         address = request.form['address']
         email = request.form['email']
-        username = request.form['username']
         password = request.form['password']
 
-        with sqlite3.connect("shopping.db") as conn:
+        with sqlite3.connect("SWEET.DB") as conn:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO user (first_name,last_name,address,email,username,password) VALUES(?,?,?,?,?,?)",
-                           (first_name, surname, address, email, username, password))
+            cursor.execute("INSERT INTO user (first_name,last_name,address,email,password) VALUES(?,?,?,?,?)",
+                           (first_name, surname, address, email, password))
             conn.commit()
             response["message"] = 'Success'
             response["status_code"] = 201
@@ -120,7 +118,7 @@ def products_create():
         type = request.form['type']
         total = int(price) * int(quantity)
 
-        with sqlite3.connect('shopping.db') as conn:
+        with sqlite3.connect('SWEET.DB') as conn:
             cursor = conn.cursor()
             cursor.execute("INSERT INTO cart (item_name, description, quantity,"
                            "price, type, total) VALUES(?, ?, ?, ?, ?, ?)", (item_name, description, quantity, price, type,
@@ -134,7 +132,7 @@ def products_create():
 @app.route('/get-products/', methods=['GET'])
 def get_products():
     response = {}
-    with sqlite3.connect('shopping.db') as conn:
+    with sqlite3.connect('SWEET.DB') as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM cart")
         carts = cursor.fetchall()
